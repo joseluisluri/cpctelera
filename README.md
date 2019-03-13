@@ -1,6 +1,6 @@
 # Android game prototype
 
-## 1 Requierements
+## 1 Requirements
 
 Install the following packages:
 
@@ -8,7 +8,16 @@ Install the following packages:
 $ sudo apt-get install zipalign openjdk-8-jdk adb
 ```
 
-## 2 Generate your certification
+## 2 Configure you game layout
+
+This step is optional:
+
+```
+$ cd examples/games/platformClimber/
+$ nano assets/android/resources/default/layout.yaml
+```
+
+## 3 Generate your debug certification
 
 Go to:
 
@@ -22,6 +31,7 @@ $ keytool -genkey -keystore cert.keystore -keyalg RSA -keysize 2048 -validity 10
 ## 3 Compile the project
 
 ```
+$ cd examples/games/platformClimber
 $ make
 ```
 
