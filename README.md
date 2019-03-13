@@ -4,20 +4,26 @@
 
 Install the following packages:
 
-> apt-get install zipalign openjdk-8-jdk adb
+```
+$ sudo apt-get install zipalign openjdk-8-jdk adb
+```
 
 ## 2 Generate your certification
 
 Go to:
 
-> cd examples/games/platformClimber
-> keytool -genkey -keystore cert.keystore -keyalg RSA -keysize 2048 -validity 10000 -alias cert
+```
+$ cd examples/games/platformClimber
+$ keytool -genkey -keystore cert.keystore -keyalg RSA -keysize 2048 -validity 10000 -alias cert
+```
 
 **Important use keystore password**: android
 
 ## 3 Compile the project
 
-> make
+```
+$ make
+```
 
 ## 4 Launch game on your device
 
@@ -32,7 +38,9 @@ Enable mode developer and USB device:
 
 Install the game on your phone:
 
-> adb install -r game.apk
+```
+$ adb install -r game.apk
+```
 
 ---------------------------------------------------------------
 
