@@ -30,6 +30,16 @@
 BINADDRLOG   := $(OBJDIR)/binaryAddresses.log
 PREBUILD_OBJ := $(OBJDIR)/prebuildstep.objectfile
 
+ANDROID_GL   := $(CPCT_PATH)tools/android-gl
+
+PROJECTDIR   := $(OBJDIR)/..
+AND_OBJDIR   := $(OBJDIR)/_android
+AND_ASSETS   := assets/android
+AND_PREAPK   := $(ANDROID_GL)/app.apk
+AND_CERT     := cert.keystore
+AND_CERTPW   := android
+ZIPALIGN     := zipalign
+
 .PHONY: all clean cleanall
 
 # MAIN TARGET
@@ -93,7 +103,28 @@ $(SNA): $(BINFILE) $(BINADDRLOG)
 	@$(call GETALLADDRESSES,$<)
 	@$(call PRINT,$(PROJNAME),"Creating Snapshot File '$@'")
 	@$(call CREATESNA,$<,$@,$(LOADADDR),$(RUNADDR))
-	@$(call PRINT,$(PROJNAME),"Successfully created '$@'")
+	@$(call PRINT,$(PROJNAME),"Successfully created '$@'") #######
+	@$(call PRINT,$(PROJNAME),"Creating Android APK 'game.apk'")
+	@$(MKDIR) $(AND_OBJDIR)
+	@$(UNZIP) $(AND_OBJDIR) $(AND_PREAPK)
+	@$(RM) -rf $(AND_OBJDIR)/META-INF
+	@$(CP) game.sna $(AND_OBJDIR)/assets/sna/
+	@$(CP) -uR $(AND_ASSETS)/* $(AND_OBJDIR)/assets/
+	cd $(AND_OBJDIR) && $(ZIP) -r ../../game.apk.tmp .
+	# use -tsa http://sha256timestamp.ws.symantec.com/sha256/timestamp para firmar con timestamp
+	jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore cert.keystore -storepass android game.apk.tmp cert
+	$(ZIPALIGN) -f -p 4 game.apk.tmp game.apk
+	@$(RM) game.apk.tmp
+	@$(call PRINT,$(PROJNAME),"Successfully created 'game.apk'")
+#######
+#######
+#######
+
+
+
+#######
+#######
+#######
 
 ## Include files in DSKFILESDIR to DSK, print a message and generate a flag file DSKINC
 $(DSKINC): $(DSK) $(DSKINCOBJFILES)

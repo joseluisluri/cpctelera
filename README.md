@@ -1,3 +1,41 @@
+# Android game prototype
+
+## 1 Requierements
+
+Install the following packages:
+
+> apt-get install zipalign openjdk-8-jdk adb
+
+## 2 Generate your certification
+
+Go to:
+
+> cd examples/games/platformClimber
+> keytool -genkey -keystore cert.keystore -keyalg RSA -keysize 2048 -validity 10000 -alias cert
+
+**Important use keystore password**: android
+
+## 3 Compile the project
+
+> make
+
+## 4 Launch game on your device
+
+Enable mode developer and USB device:
+
+1. Open the Settings app.
+2. (Only on Android 8.0 or higher) Select System.
+3. Scroll to the bottom and select About phone.
+4. Scroll to the bottom and tap Build number 7 times.
+5. Return to the previous screen to find Developer options near the bottom
+6. Enable USB debugging
+
+Install the game on your phone:
+
+> adb install -r game.apk
+
+---------------------------------------------------------------
+
 ![CPCtelera Logo][CPCTLogo]
 
 _**Astonishingly fast Amstrad CPC game engine for C and Assembler developers**_

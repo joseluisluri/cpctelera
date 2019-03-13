@@ -1,0 +1,119 @@
+---
+version: 1.0
+definition:
+  sprites:
+    - type: static
+      name: header
+      texture: tileset.png
+      rect: 0px 0px 1080px 150px
+    - type: static
+      name: shadow
+      texture: tileset.png
+      rect: 0px 150px 1080px 810px
+    - type: static
+      name: direction_pad
+      texture: tileset.png
+      rect: 4px 1077px 385px 385px
+    - type: static
+      name: direction_pad_transparent
+      texture: tileset.png
+      rect: 4px 1077px 385px 385px
+      opacity: 0.8
+    - type: static
+      name: button_a
+      texture: tileset.png
+      rect: 521px 960px 193px 193px
+      opacity: 0.3
+    - type: static
+      name: button_b
+      texture: tileset.png
+      rect: 715px 960px 193px 193px
+    - type: static
+      name: button_start
+      texture: tileset.png
+      rect: 260px 960px 260px 117px
+    - type: static
+      name: button_select
+      texture: tileset.png
+      rect: 0px 960px 260px 117px
+  layouts:
+    - orientation: portrait
+      views:
+        - type: sprite
+          size: 100% auto
+          position: 0px 0px null null
+          background: rgb(0, 255, 0)
+          sprite: header
+          z-index: 3
+        - type: machine
+          position: 10% null null null
+          size: 100% auto
+          z-index: 2
+        - type: group
+          position: null null 0px null
+          size: 1080px 960px
+          background: rgb(46, 47, 51)
+          z-index: 1
+          views:
+            - type: group
+              size: 50% 100%
+              position: null null null 0px
+              views:
+                - type: dpad4
+                  size: 385px 385px
+                  position: 20% null null null
+                  sprites-default: direction_pad
+                  sprites-pressed: direction_pad
+                  keys:
+                    up: key_cursor_up
+                    right: key_cursor_right
+                    down: key_cursor_bottom
+                    left: key_cursor_left
+                - type: button
+                  size: 260px 117px
+                  position: null 10% 10% null
+                  sprites-default: button_select
+                  sprites-pressed: button_select
+            - type: group
+              size: 50% 100%
+              position: null 0px null null
+              views:
+                - type: button
+                  size: 193px 193px
+                  sprites-default: button_a
+                  sprites-pressed: button_a
+                  position: 35% 55% null null
+                  key: key_2
+                - type: button
+                  size: 193px 193px
+                  sprites-default: button_b
+                  sprites-pressed: button_b
+                  position: null null 55% 55%
+                  ##key: key_cursor_right
+                - type: button
+                  size: 260px 117px
+                  position: null null 10% 10%
+                  sprites-default: button_start
+                  sprites-pressed: button_start
+                  key: key_space
+    - orientation: landscape
+      views:
+        - type: group
+          size: 100% 100%
+          background: rgb(46, 47, 51)
+          views:
+            - type: machine
+              size: 100% auto
+              z-index: 1
+            - type: dpad4
+              size: auto 35%
+              position: null null 10% 5%
+              sprites-default: direction_pad_transparent
+              sprites-pressed: direction_pad_transparent
+              z-index: 2
+              keys:
+                up: key_cursor_up
+                right: key_cursor_right
+                down: key_cursor_bottom
+                left: key_cursor_left
+...
