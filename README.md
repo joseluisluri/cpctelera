@@ -5,7 +5,7 @@
 Install the following packages:
 
 ```
-$ sudo apt-get install zipalign openjdk-8-jdk adb
+$ sudo apt-get install zip unzip zipalign openjdk-8-jdk adb
 ```
 
 ## 2 Configure you game layout
