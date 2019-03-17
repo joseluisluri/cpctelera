@@ -103,8 +103,6 @@ RM    := rm -f
 CP    := cp
 TEE   := tee
 CAT   := cat
-ZIP   := zip -q -r
-UNZIP := unzip -q -d
 
 ## USEFUL TRICKS (Like defining a space)
 SPACE := 

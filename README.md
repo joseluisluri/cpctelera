@@ -2,22 +2,41 @@
 
 ## 1 Requirements
 
-Install the following packages:
+Mandatory dependencies:
 
 ```
-$ sudo apt-get install zip unzip zipalign openjdk-8-jdk adb
+$ sudo apt-get install zipalign openjdk-8-jdk
 ```
 
-## 2 Configure you game layout
-
-This step is optional:
+Optional:
 
 ```
-$ cd examples/games/platformClimber/
-$ nano assets/android/resources/default/layout.yaml
+$sudo apt-get install adb
 ```
 
-## 3 Generate your debug certification
+## 2 Configure your game
+
+```
+$ cd examples/games/platformClimber/assets
+```
+
+Key mapping:
+
+```
+assets/config.json
+```
+
+Game icons:
+
+```
+res/mipmap-hdpi/
+res/mipmap-mdpi/
+res/mipmap-xhdpi/
+res/mipmap-xxhdpi/
+res/mipmap-xxxhdpi/
+```
+
+## 3 Generate your apk certification
 
 Go to:
 
@@ -35,9 +54,9 @@ $ cd examples/games/platformClimber
 $ make
 ```
 
-## 4 Launch game on your device
+## 4 Launch your game on your device (Optional)
 
-Enable mode developer and USB device:
+Enable mode developer on your device:
 
 1. Open the Settings app.
 2. (Only on Android 8.0 or higher) Select System.
@@ -46,7 +65,7 @@ Enable mode developer and USB device:
 5. Return to the previous screen to find Developer options near the bottom
 6. Enable USB debugging
 
-Install the game on your phone:
+Install the game on your phone via USB:
 
 ```
 $ adb install -r game.apk

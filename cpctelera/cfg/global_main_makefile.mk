@@ -30,15 +30,34 @@
 BINADDRLOG   := $(OBJDIR)/binaryAddresses.log
 PREBUILD_OBJ := $(OBJDIR)/prebuildstep.objectfile
 
-ANDROID_GL   := $(CPCT_PATH)tools/android-gl
+#######
+####### ANDROIN HEADER BEGIN
+#######
 
-PROJECTDIR   := $(OBJDIR)/..
-AND_OBJDIR   := $(OBJDIR)/_android
-AND_ASSETS   := assets/android
-AND_PREAPK   := $(ANDROID_GL)/app.apk
-AND_CERT     := cert.keystore
-AND_CERTPW   := android
-ZIPALIGN     := zipalign
+# Create your owen certfication
+# Command: keytool -genkey -keystore cert.keystore -keyalg RSA -keysize 2048 -validity 10000 -alias cert
+# Remember, use password: "android"
+
+CUSTOM_APP_NAME   := My Custom Name
+CUSTOM_APP_ID     := org.cpctelera.customid
+CUSTOM_APP_CERT   := cert.keystore
+
+# PATHS
+APKRENAME_PATH  := $(CPCT_PATH)tools/apkrename/
+APKTOOL_PATH    := $(CPCT_PATH)tools/apktool/
+AND_OBJDIR   := $(OBJDIR)/_android/
+AND_ASSETS   := assets/android/
+
+# TOOLS
+ZIPALIGN  := zipalign
+JARSIGNER := jarsigner
+RVMENGINE := $(CPCT_PATH)tools/rvmengine/app.apk
+APKTOOL   := java -jar $(APKTOOL_PATH)apktool_2.4.0.jar
+APKRENAME := $(APKRENAME_PATH)apkRename.sh
+
+#######
+####### ANDROIN HEADER END
+#######
 
 .PHONY: all clean cleanall
 
@@ -105,25 +124,39 @@ $(SNA): $(BINFILE) $(BINADDRLOG)
 	@$(call CREATESNA,$<,$@,$(LOADADDR),$(RUNADDR))
 	@$(call PRINT,$(PROJNAME),"Successfully created '$@'") #######
 	@$(call PRINT,$(PROJNAME),"Creating Android APK 'game.apk'")
-	@$(MKDIR) $(AND_OBJDIR)
-	@$(UNZIP) $(AND_OBJDIR) $(AND_PREAPK)
-	@$(RM) -rf $(AND_OBJDIR)/META-INF
-	@$(CP) game.sna $(AND_OBJDIR)/assets/sna/
-	@$(CP) -uR $(AND_ASSETS)/* $(AND_OBJDIR)/assets/
-	cd $(AND_OBJDIR) && $(ZIP) -r ../../game.apk.tmp .
-	# use -tsa http://sha256timestamp.ws.symantec.com/sha256/timestamp para firmar con timestamp
-	jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore cert.keystore -storepass android game.apk.tmp cert
-	$(ZIPALIGN) -f -p 4 game.apk.tmp game.apk
+
+#######
+####### ANDROIN PROCEDURE BEGIN
+#######
+
+# DECODE APK
+	@$(APKTOOL) decode $(RVMENGINE) -f -o $(AND_OBJDIR)
+
+# REPLACE ASSETS
+	@$(CP) game.sna $(AND_OBJDIR)assets/payload.sna
+	@$(CP) -R $(AND_ASSETS)* $(AND_OBJDIR)
+
+# REPLACE APPLICATION NAME
+	@sed -i -e '/<resources>/,/<\/resources>/ s|<string name="app_name">[0-9a-Z.]\{1,\}</string>|<string name="app_name">$(CUSTOM_APP_NAME)</string>|g' $(AND_OBJDIR)res/values/strings.xml
+
+# BUILD APK
+	@$(APKTOOL) build $(AND_OBJDIR) -o game.apk
+
+# REPLACE APPLICATION ID
+	@$(APKRENAME) game.apk $(CUSTOM_APP_ID)
+	@$(RM) -rf tmpForApkRename
+
+# SIGN APK
+	@$(JARSIGNER) -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore cert.keystore -storepass android game.apk cert
+
+# ALIGN APK
+	@mv game.apk game.apk.tmp
+	@$(ZIPALIGN) -f -p 4 game.apk.tmp game.apk
 	@$(RM) game.apk.tmp
+
 	@$(call PRINT,$(PROJNAME),"Successfully created 'game.apk'")
 #######
-#######
-#######
-
-
-
-#######
-#######
+####### ANDROID PROCEDURE END
 #######
 
 ## Include files in DSKFILESDIR to DSK, print a message and generate a flag file DSKINC
